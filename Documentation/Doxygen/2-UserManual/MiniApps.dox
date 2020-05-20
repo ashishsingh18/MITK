@@ -36,6 +36,8 @@ The configured command line tools are now available via the drop-down box of the
 \section MiniAppExplainPageAvailableList Available MiniApps
 
 \li \subpage DiffusionMiniApps
+\li \subpage mitkBasicImageProcessingMiniAppsPortalPage
+\li \subpage mitkClassificationMiniAppsPortalPage
 
 \section MiniAppExplainPageTechnicalInformation Technical Information
 
@@ -47,7 +49,7 @@ $./GibbsTracking --xml
 <category>Fiber Tracking and Processing Methods</category>
 <title>Gibbs Tracking</title>
 <description></description>
-<contributor>MBI</contributor>
+<contributor>German Cancer Research Center (DKFZ)</contributor>
 <parameters>
 ...
 </parameters>

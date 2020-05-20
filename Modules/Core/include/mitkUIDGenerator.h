@@ -1,45 +1,35 @@
-/*===================================================================
+/*============================================================================
 
 The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center,
-Division of Medical and Biological Informatics.
+Copyright (c) German Cancer Research Center (DKFZ)
 All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without
-even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.
+Use of this source code is governed by a 3-clause BSD license that can be
+found in the LICENSE file.
 
-See LICENSE.txt or http://www.mitk.org for details.
-
-===================================================================*/
+============================================================================*/
 
 #ifndef MITK_UID_GENERATOR_INDCLUDED_FASAWE
 #define MITK_UID_GENERATOR_INDCLUDED_FASAWE
 
 #include <MitkCoreExports.h>
-#include <itkMersenneTwisterRandomVariateGenerator.h>
+#include <iostream>
+#include <random>
 #include <string>
-
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable : 4251)
-#endif
 
 namespace mitk
 {
   /*!
     \brief Generated unique IDs
 
-    Creates (somehow most of the time) unique IDs from a given prefix,
-    the current date/time and a random part.
+    Creates unique IDs from a given prefix, the current date/time and a random part. Be aware that, a length of one or
+    two might not be sufficient.
 
     The prefix is given to the constructor, together with the desired
-    length of the random part (minimum 5 digits).
+    length of the random part.
 
-    The current implementation uses the time in seconds in combination with an a random part. This
-    should assure a unique ID on a very high probability. Still, there is a very small chance to get
-    identical random numbers. A feature request for improved UID generation is handled in BUG 14333.
+    The current implementation uses the time in seconds in combination with an a random part.
   */
   class MITKCORE_EXPORT UIDGenerator
   {
@@ -52,12 +42,8 @@ namespace mitk
   private:
     std::string m_Prefix;
     unsigned int m_LengthOfRandomPart;
-    itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer m_RandomGenerator;
+    std::uniform_int_distribution<unsigned long int> m_Distribution;
   };
-}
-
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
+} // namespace mitk
 
 #endif

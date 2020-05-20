@@ -4,8 +4,8 @@
 set(MITK_MODULES
   Core
   CommandLine
+  CoreCmdApps
   AppUtil
-  RDF
   LegacyIO
   DataTypesExt
   Annotation
@@ -14,6 +14,7 @@ set(MITK_MODULES
   MapperExt
   DICOMReader
   DICOMReaderServices
+  DICOMQI
   DICOMTesting
   SceneSerializationBase
   PlanarFigure
@@ -23,19 +24,18 @@ set(MITK_MODULES
   Gizmo
   GraphAlgorithms
   Multilabel
+  Chart
   ImageStatistics
   ContourModel
   SurfaceInterpolation
   Segmentation
-  PlanarFigureSegmentation
   QtWidgets
   QtWidgetsExt
-  Chart
+  ImageStatisticsUI
   SegmentationUI
   MatchPointRegistration
   MatchPointRegistrationUI
   Classification
-  GPGPU
   OpenIGTLink
   IGTBase
   IGT
@@ -64,13 +64,21 @@ set(MITK_MODULES
   XNAT
   TubeGraph
   BiophotonicsHardware
-  DiffusionImaging
-  TumorInvasionAnalysis
   BoundingShape
   RenderWindowManager
   RenderWindowManagerUI
+  SemanticRelations
+  SemanticRelationsUI
   CEST
   BasicImageProcessing
+  ModelFit
+  ModelFitUI
+  Pharmacokinetics
+  PharmacokineticsUI
+  DICOMPM
+  REST
+  RESTService
+  DICOMweb
 )
 
 if(MITK_ENABLE_PIC_READER)

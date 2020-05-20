@@ -1,3 +1,15 @@
+/*============================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center (DKFZ)
+All rights reserved.
+
+Use of this source code is governed by a 3-clause BSD license that can be
+found in the LICENSE file.
+
+============================================================================*/
+
 #include <mitkGIFCooccurenceMatrix2.h>
 
 // MITK
@@ -445,8 +457,6 @@ CalculateCoocurenceFeatures(itk::Image<TPixel, VImageDimension>* itkImage, mitk:
   MatrixFeaturesTo(overallFeature, config.prefix + "Overall ", featureList);
   MatrixFeaturesTo(featureMean, config.prefix + "Mean ", featureList);
   MatrixFeaturesTo(featureStd, config.prefix + "Std.Dev. ", featureList);
-
-
 }
 
 
@@ -490,10 +500,12 @@ void MatrixFeaturesTo(mitk::CoocurenceMatrixFeatures features,
 
 static
 void CalculateMeanAndStdDevFeatures(std::vector<mitk::CoocurenceMatrixFeatures> featureList,
-                                    mitk::CoocurenceMatrixFeatures &meanFeature,
-                                    mitk::CoocurenceMatrixFeatures  &stdFeature)
+  mitk::CoocurenceMatrixFeatures &meanFeature,
+  mitk::CoocurenceMatrixFeatures  &stdFeature)
 {
-#define ADDFEATURE(a) meanFeature.a += featureList[i].a;stdFeature.a += featureList[i].a*featureList[i].a
+#define ADDFEATURE(a)                                                                         \
+  if ( ! (featureList[i].a == featureList[i].a)) featureList[i].a = 0;                        \
+   meanFeature.a += featureList[i].a;stdFeature.a += featureList[i].a*featureList[i].a
 #define CALCVARIANCE(a) stdFeature.a =sqrt(stdFeature.a - meanFeature.a*meanFeature.a)
 
   for (std::size_t i = 0; i < featureList.size(); ++i)

@@ -1,18 +1,14 @@
-/*===================================================================
+/*============================================================================
 
 The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center,
-Division of Medical and Biological Informatics.
+Copyright (c) German Cancer Research Center (DKFZ)
 All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without
-even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.
+Use of this source code is governed by a 3-clause BSD license that can be
+found in the LICENSE file.
 
-See LICENSE.txt or http://www.mitk.org for details.
-
-===================================================================*/
+============================================================================*/
 
 // MITK
 #include <mitkAbstractTransformGeometry.h>
@@ -603,7 +599,7 @@ void mitk::ImageVtkMapper2D::ApplyLookuptable(mitk::BaseRenderer *renderer)
 
   // If lookup table or transferfunction use is requested...
   mitk::LookupTableProperty::Pointer lookupTableProp =
-    dynamic_cast<mitk::LookupTableProperty *>(this->GetDataNode()->GetProperty("LookupTable"));
+    dynamic_cast<mitk::LookupTableProperty *>(this->GetDataNode()->GetProperty("LookupTable", renderer));
 
   if (lookupTableProp.IsNotNull()) // is a lookuptable set?
   {
@@ -712,7 +708,7 @@ void mitk::ImageVtkMapper2D::SetDefaultProperties(mitk::DataNode *node, mitk::Ba
   mitkLut->SetType(mitk::LookupTable::GRAYSCALE);
   mitk::LookupTableProperty::Pointer mitkLutProp = mitk::LookupTableProperty::New();
   mitkLutProp->SetLookupTable(mitkLut);
-  node->SetProperty("LookupTable", mitkLutProp);
+  node->SetProperty("LookupTable", mitkLutProp, renderer);
 
   std::string photometricInterpretation; // DICOM tag telling us how pixel values should be displayed
   if (node->GetStringProperty("dicom.pixel.PhotometricInterpretation", photometricInterpretation))
@@ -723,7 +719,7 @@ void mitk::ImageVtkMapper2D::SetDefaultProperties(mitk::DataNode *node, mitk::Ba
       // Set inverse grayscale look-up table
       mitkLut->SetType(mitk::LookupTable::INVERSE_GRAYSCALE);
       mitkLutProp->SetLookupTable(mitkLut);
-      node->SetProperty("LookupTable", mitkLutProp);
+      node->SetProperty("LookupTable", mitkLutProp, renderer);
       renderingModeProperty->SetValue(mitk::RenderingModeProperty::LOOKUPTABLE_LEVELWINDOW_COLOR); // USE lookuptable
     }
     // Otherwise do nothing - the default grayscale look-up table has already been set
@@ -803,9 +799,10 @@ void mitk::ImageVtkMapper2D::SetDefaultProperties(mitk::DataNode *node, mitk::Ba
     if ((overwrite) || (node->GetProperty("levelwindow", renderer) == nullptr))
     {
       /* initialize level/window from DICOM tags */
+      mitk::LevelWindow contrast;
+
       std::string sLevel = "";
       std::string sWindow = "";
-
       if (GetBackwardsCompatibleDICOMProperty(
             0x0028, 0x1050, "dicom.voilut.WindowCenter", image->GetPropertyList(), sLevel) &&
           GetBackwardsCompatibleDICOMProperty(
@@ -814,7 +811,6 @@ void mitk::ImageVtkMapper2D::SetDefaultProperties(mitk::DataNode *node, mitk::Ba
         float level = atof(sLevel.c_str());
         float window = atof(sWindow.c_str());
 
-        mitk::LevelWindow contrast;
         std::string sSmallestPixelValueInSeries;
         std::string sLargestPixelValueInSeries;
 
@@ -837,13 +833,18 @@ void mitk::ImageVtkMapper2D::SetDefaultProperties(mitk::DataNode *node, mitk::Ba
         }
         else
         {
-          contrast.SetAuto(static_cast<mitk::Image *>(node->GetData()), false, true); // we need this as a fallback
+          contrast.SetAuto(static_cast<mitk::Image *>(node->GetData()), false, true); // fallback
         }
-
         contrast.SetLevelWindow(level, window, true);
-        node->SetProperty("levelwindow", LevelWindowProperty::New(contrast), renderer);
       }
+      else
+      {
+        contrast.SetAuto(static_cast<mitk::Image *>(node->GetData()), false, true); // fallback
+      }
+
+      node->SetProperty("levelwindow", LevelWindowProperty::New(contrast), renderer);
     }
+
     if (((overwrite) || (node->GetProperty("opaclevelwindow", renderer) == nullptr)) &&
         (image->GetPixelType().GetPixelType() == itk::ImageIOBase::RGBA) &&
         (image->GetPixelType().GetComponentType() == itk::ImageIOBase::UCHAR))

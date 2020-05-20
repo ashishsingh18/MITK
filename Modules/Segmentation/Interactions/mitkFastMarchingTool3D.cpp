@@ -1,18 +1,14 @@
-/*===================================================================
+/*============================================================================
 
 The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center,
-Division of Medical and Biological Informatics.
+Copyright (c) German Cancer Research Center (DKFZ)
 All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without
-even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.
+Use of this source code is governed by a 3-clause BSD license that can be
+found in the LICENSE file.
 
-See LICENSE.txt or http://www.mitk.org for details.
-
-===================================================================*/
+============================================================================*/
 
 #include "mitkFastMarchingTool3D.h"
 #include "mitkToolManager.h"
@@ -45,7 +41,9 @@ mitk::FastMarchingTool3D::FastMarchingTool3D()
     m_StoppingValue(100),
     m_Sigma(1.0),
     m_Alpha(-0.5),
-    m_Beta(3.0)
+    m_Beta(3.0),
+    m_PointSetAddObserverTag(0),
+    m_PointSetRemoveObserverTag(0)
 {
 }
 

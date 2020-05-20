@@ -1,18 +1,14 @@
-/*===================================================================
+/*============================================================================
 
 The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center,
-Division of Medical and Biological Informatics.
+Copyright (c) German Cancer Research Center (DKFZ)
 All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without
-even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.
+Use of this source code is governed by a 3-clause BSD license that can be
+found in the LICENSE file.
 
-See LICENSE.txt or http://www.mitk.org for details.
-
-===================================================================*/
+============================================================================*/
 
 #include "mitkAlgorithmHelper.h"
 
@@ -33,11 +29,37 @@ See LICENSE.txt or http://www.mitk.org for details.
 namespace mitk
 {
 
-  MITKAlgorithmHelper::MITKAlgorithmHelper(map::algorithm::RegistrationAlgorithmBase* algorithm) :
-    m_AlgorithmBase(algorithm)
+  MITKAlgorithmHelper::MITKAlgorithmHelper(map::algorithm::RegistrationAlgorithmBase *algorithm)
+    : m_AlgorithmBase(algorithm), m_Error(CheckError::none)
   {
     m_AllowImageCasting = true;
   }
+
+  bool MITKAlgorithmHelper::HasImageAlgorithmInterface(const map::algorithm::RegistrationAlgorithmBase* algorithm)
+  {
+    using InternalDefault2DImageType = itk::Image<map::core::discrete::InternalPixelType, 2>;
+    using InternalDefault3DImageType = itk::Image<map::core::discrete::InternalPixelType, 3>;
+
+    using Alg2DType = const ::map::algorithm::facet::ImageRegistrationAlgorithmInterface<InternalDefault2DImageType, InternalDefault2DImageType>;
+    if (dynamic_cast<Alg2DType*>(algorithm) != nullptr) return true;
+    using Alg3DType = const ::map::algorithm::facet::ImageRegistrationAlgorithmInterface<InternalDefault3DImageType, InternalDefault3DImageType>;
+    if (dynamic_cast<Alg3DType*>(algorithm) != nullptr) return true;
+    using Alg2D3DType = const ::map::algorithm::facet::ImageRegistrationAlgorithmInterface<InternalDefault2DImageType, InternalDefault3DImageType>;
+    if (dynamic_cast<Alg2D3DType*>(algorithm) != nullptr) return true;
+    using Alg3D2DType = const ::map::algorithm::facet::ImageRegistrationAlgorithmInterface<InternalDefault3DImageType, InternalDefault2DImageType>;
+    if (dynamic_cast<Alg3D2DType*>(algorithm) != nullptr) return true;
+
+    return false;
+  };
+
+  bool MITKAlgorithmHelper::HasPointSetAlgorithmInterface(const map::algorithm::RegistrationAlgorithmBase* algorithm)
+  {
+    typedef ::map::core::continuous::Elements<3>::InternalPointSetType InternalDefaultPointSetType;
+    typedef const ::map::algorithm::facet::PointSetRegistrationAlgorithmInterface<InternalDefaultPointSetType, InternalDefaultPointSetType>
+      PointSetRegInterface;
+
+    return dynamic_cast<PointSetRegInterface*>(algorithm) != nullptr;
+  };
 
   map::core::RegistrationBase::Pointer
   MITKAlgorithmHelper::

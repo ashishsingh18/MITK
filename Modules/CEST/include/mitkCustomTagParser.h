@@ -1,18 +1,14 @@
-/*===================================================================
+/*============================================================================
 
 The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center,
-Division of Medical and Biological Informatics.
+Copyright (c) German Cancer Research Center (DKFZ)
 All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without
-even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.
+Use of this source code is governed by a 3-clause BSD license that can be
+found in the LICENSE file.
 
-See LICENSE.txt or http://www.mitk.org for details.
-
-===================================================================*/
+============================================================================*/
 
 #ifndef MITKCUSTOMTAGPARSER_H
 #define MITKCUSTOMTAGPARSER_H
@@ -107,7 +103,7 @@ namespace mitk
     std::string GetRevisionAppropriateJSONString(std::string revisionString);
     void GetClosestLowerRevision(std::string revisionString);
     std::string GetClosestLowerRevision(std::string revisionString, std::vector<int> availableRevisionsVector);
-    
+
     /// Decides whether or not the image is likely to be a T1Map, if not it is assumed to be a CEST sequence
     bool IsT1Sequence(std::string preparationType, std::string recoveryMode, std::string spoilingType, std::string revisionString);
 
@@ -138,6 +134,14 @@ namespace mitk
     /// How to handle parameter mapping based on absent revision jsons
     std::string m_RevisionMappingStrategy;
   };
+
+  const std::string MITKCEST_EXPORT CEST_PROPERTY_NAME_TOTALSCANTIME();
+  const std::string MITKCEST_EXPORT CEST_PROPERTY_NAME_PREPERATIONTYPE();
+  const std::string MITKCEST_EXPORT CEST_PROPERTY_NAME_RECOVERYMODE();
+  const std::string MITKCEST_EXPORT CEST_PROPERTY_NAME_SPOILINGTYPE();
+  const std::string MITKCEST_EXPORT CEST_PROPERTY_NAME_OFFSETS();
+  const std::string MITKCEST_EXPORT CEST_PROPERTY_NAME_TREC();
+
 }
 
 #endif // MITKCUSTOMTAGPARSER_H

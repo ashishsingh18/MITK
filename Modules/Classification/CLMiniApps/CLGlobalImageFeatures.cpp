@@ -1,18 +1,14 @@
-/*===================================================================
+/*============================================================================
 
 The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center,
-Division of Medical and Biological Informatics.
+Copyright (c) German Cancer Research Center (DKFZ)
 All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without
-even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.
+Use of this source code is governed by a 3-clause BSD license that can be
+found in the LICENSE file.
 
-See LICENSE.txt or http://www.mitk.org for details.
-
-===================================================================*/
+============================================================================*/
 #ifndef mitkCLPolyToNrrd_cpp
 #define mitkCLPolyToNrrd_cpp
 
@@ -31,6 +27,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkGIFGreyLevelRunLength.h>
 #include <mitkGIFFirstOrderStatistics.h>
 #include <mitkGIFFirstOrderHistogramStatistics.h>
+#include <mitkGIFFirstOrderNumericStatistics.h>
 #include <mitkGIFVolumetricStatistics.h>
 #include <mitkGIFVolumetricDensityStatistics.h>
 #include <mitkGIFGreyLevelSizeZone.h>
@@ -80,7 +77,7 @@ public:
 
   }
 protected:
-  charT do_decimal_point() const { return m_Sep; }
+  charT do_decimal_point() const override { return m_Sep; }
 private:
   charT m_Sep;
 };
@@ -369,6 +366,7 @@ int main(int argc, char* argv[])
   mitk::GIFImageDescriptionFeatures::Pointer ipCalculator = mitk::GIFImageDescriptionFeatures::New(); // Commented 2, Tested
   mitk::GIFFirstOrderStatistics::Pointer firstOrderCalculator = mitk::GIFFirstOrderStatistics::New(); //Commented 2
   mitk::GIFFirstOrderHistogramStatistics::Pointer firstOrderHistoCalculator = mitk::GIFFirstOrderHistogramStatistics::New(); // Commented 2, Tested
+  mitk::GIFFirstOrderNumericStatistics::Pointer firstOrderNumericCalculator = mitk::GIFFirstOrderNumericStatistics::New(); // Commented 2, Tested
   mitk::GIFVolumetricStatistics::Pointer volCalculator = mitk::GIFVolumetricStatistics::New();   // Commented 2, Tested
   mitk::GIFVolumetricDensityStatistics::Pointer voldenCalculator = mitk::GIFVolumetricDensityStatistics::New(); // Commented 2, Tested
   mitk::GIFCooccurenceMatrix::Pointer coocCalculator = mitk::GIFCooccurenceMatrix::New(); // Commented 2, Will not be tested
@@ -387,6 +385,7 @@ int main(int argc, char* argv[])
   features.push_back(voldenCalculator.GetPointer());
   features.push_back(curvCalculator.GetPointer());
   features.push_back(firstOrderCalculator.GetPointer());
+  features.push_back(firstOrderNumericCalculator.GetPointer());
   features.push_back(firstOrderHistoCalculator.GetPointer());
   features.push_back(ivohCalculator.GetPointer());
   features.push_back(lociCalculator.GetPointer());
@@ -420,7 +419,7 @@ int main(int argc, char* argv[])
   parser.setCategory("Classification Tools");
   parser.setTitle("Global Image Feature calculator");
   parser.setDescription("Calculates different global statistics for a given segmentation / image combination");
-  parser.setContributor("MBI");
+  parser.setContributor("German Cancer Research Center (DKFZ)");
 
   std::map<std::string, us::Any> parsedArgs = parser.parseArguments(argc, argv);
   param.ParseParameter(parsedArgs);
@@ -444,6 +443,7 @@ int main(int argc, char* argv[])
   if (param.useLogfile)
   {
     log.open(param.logfilePath, std::ios::app);
+    log << std::endl;
     log << version;
     log << "Image: " << param.imagePath;
     log << "Mask: " << param.maskPath;
@@ -529,7 +529,7 @@ int main(int argc, char* argv[])
   log << " Check for Equality -";
   if ( ! mitk::Equal(mask->GetGeometry(0)->GetSpacing(), image->GetGeometry(0)->GetSpacing()))
   {
-    MITK_INFO << "Not equal Sapcings";
+    MITK_INFO << "Not equal Spacing";
     if (param.ensureSameSpace)
     {
       MITK_INFO << "Warning!";
